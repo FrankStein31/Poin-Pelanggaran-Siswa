@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filter_kelas_x"
+        android:title="Kelas X (10)" />
+    <item
+        android:id="@+id/filter_kelas_xi"
+        android:title="Kelas XI (11)" />
+    <item
+        android:id="@+id/filter_kelas_xii"
+        android:title="Kelas XII (12)" />
+</menu>

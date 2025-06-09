@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Toolbar dengan ikon kembali -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="?attr/actionBarTheme"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Tambah Jadwal Piket" />
+
+    <!-- Konten utama -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Input tanggal (otomatis isi hari) -->
+            <EditText
+                android:id="@+id/tanggalEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pilih Tanggal"
+                android:focusable="false"
+                android:inputType="none"
+                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:padding="10dp" />
+
+            <!-- Hari hasil dari tanggal -->
+            <EditText
+                android:id="@+id/hariEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Hari"
+                android:enabled="false"
+                android:padding="10dp" />
+
+            <!-- Input jam -->
+            <EditText
+                android:id="@+id/jamEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Jam (misal: 07.00 - 10.00)"
+                android:inputType="text"
+                android:padding="10dp" />
+
+            <!-- Spinner untuk pilih guru -->
+            <Spinner
+                android:id="@+id/guruSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp" />
+
+            <!-- Tombol tambah -->
+            <Button
+                android:id="@+id/tambahJadwalButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Simpan"
+                android:layout_marginTop="10dp" />
+
+            <!-- ListView untuk menampilkan jadwal -->
+            <ListView
+                android:id="@+id/jadwalListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

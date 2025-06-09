@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filter_semua"
+        android:title="Semua Jurusan" />
+    <item
+        android:id="@+id/filter_tkr"
+        android:title="TKR" />
+    <item
+        android:id="@+id/filter_tav"
+        android:title="TAV" />
+    <item
+        android:id="@+id/filter_dpi"
+        android:title="DPIB" />
+    <item
+        android:id="@+id/filter_tjkt"
+        android:title="TJKT" />
+    <item
+        android:id="@+id/filter_tei"
+        android:title="TEI" />
+</menu>

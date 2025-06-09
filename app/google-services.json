@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "1092078346211",
+    "firebase_url": "https://mobile-lanjut-3e0da-default-rtdb.firebaseio.com",
+    "project_id": "mobile-lanjut-3e0da",
+    "storage_bucket": "mobile-lanjut-3e0da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092078346211:android:e4450d2bd396cacdf2cad6",
+        "android_client_info": {
+          "package_name": "fidya.ardani.crudadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5tVjMsqeJgB4itcZj58Pra2Pi758D58s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092078346211:android:f231c9eb3a8e5567f2cad6",
+        "android_client_info": {
+          "package_name": "fidya.ardani.crudclient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5tVjMsqeJgB4itcZj58Pra2Pi758D58s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092078346211:android:ae96f5fe07b98fa1f2cad6",
+        "android_client_info": {
+          "package_name": "fidya.ardani.la"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5tVjMsqeJgB4itcZj58Pra2Pi758D58s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092078346211:android:7bad6b78b6ea0413f2cad6",
+        "android_client_info": {
+          "package_name": "fidya.ardani.pdf2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5tVjMsqeJgB4itcZj58Pra2Pi758D58s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092078346211:android:28aa9973d286ba25f2cad6",
+        "android_client_info": {
+          "package_name": "fidya.tri.ardani.projectfirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5tVjMsqeJgB4itcZj58Pra2Pi758D58s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

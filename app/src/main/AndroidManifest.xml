@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/ic_logo_school"
+        android:label="E-Poin"
+        android:roundIcon="@drawable/ic_logo_school"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LA"
+        tools:targetApi="31">
+        <activity
+            android:name=".DataKelasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahGuruPiketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahPoinActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JadwalPiketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditDataSiswaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahJadwalPiketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DataJurusanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DataPoinActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DataGuruPiketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DataPoinSiswaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RiwayatLaporanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PiketHariIniActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahLaporanCepatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahDataSiswaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DataSiswaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".KategoriPoinActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahKelasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LaporanCepatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardGuruBkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardSiswaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardGuruPiketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TambahJurusanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

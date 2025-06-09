@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">LA</string>
+    <string name="edit_button">Edit</string>
+    <string name="delete_button">Hapus</string>
+
+    <string-array name="kelas_array">
+        <item>X-A</item>
+        <item>X-B</item>
+        <item>X-C</item>
+        <item>XI-A</item>
+        <item>XI-B</item>
+        <item>XI-C</item>
+        <item>XII-A</item>
+        <item>XII-B</item>
+        <item>XII-C</item>
+    </string-array>
+
+    <!-- String yang sudah ada sebelumnya -->
+    <string name="edit">Edit</string>
+    <string name="delete">Hapus</string>
+
+    <!-- String baru untuk menu tambah jadwal -->
+    <string name="tambah_jadwal">Tambah Jadwal Piket</string>
+    <string name="hari">Hari</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="pilih_tanggal">Pilih Tanggal</string>
+    <string name="petugas_piket">Nama Petugas Piket (pisahkan dengan koma)</string>
+    <string name="simpan">Simpan</string>
+    <string name="batal">Batal</string>
+
+     <!-- Placeholder text untuk item jadwal piket -->
+    <string name="placeholder_hari">SENIN</string>
+    <string name="placeholder_tanggal">12 April 2025</string>
+    <string name="label_petugas">Petugas Piket:</string>
+    <string name="placeholder_petugas">Ahmad, Budi, Citra</string>
+    <!-- Array hari untuk Spinner -->
+    <string-array name="hari_array">
+        <item>SENIN</item>
+        <item>SELASA</item>
+        <item>RABU</item>
+        <item>KAMIS</item>
+        <item>JUMAT</item>
+        <item>SABTU</item>
+        <item>MINGGU</item>
+    </string-array>
+
+</resources>

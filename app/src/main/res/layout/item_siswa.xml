@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Nama Siswa -->
+        <TextView
+            android:id="@+id/tvNamaSiswa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nama Siswa"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Andi Wijaya" />
+
+        <!-- NIS -->
+        <TextView
+            android:id="@+id/tvNIS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="NIS: "
+            tools:text="NIS: 123456" />
+
+        <!-- Kelas -->
+        <TextView
+            android:id="@+id/tvDetailJurusan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Jurusan: "
+            tools:text="Jurusan: Teknik Elektronik Industri" />
+
+        <!-- Kelas -->
+        <TextView
+            android:id="@+id/tvDetailKelas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Kelas: "
+            tools:text="Kelas: XII IPA 1" />
+
+        <!-- Alamat -->
+        <TextView
+            android:id="@+id/tvDetailAlamat"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:layout_marginTop="8dp"
+            android:text="Alamat: "
+            tools:text="Alamat: Jl. Merdeka No. 123" />
+
+        <!-- Tombol Aksi -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:backgroundTint="@color/delete_button_color"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

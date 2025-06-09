@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="Daftar Kelas"
+        android:titleTextColor="@android:color/black"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <!-- Konten Halaman -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="16dp">
+
+        <ListView
+            android:id="@+id/listViewKelas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Tombol Tambah (FAB) di kanan bawah) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnTambahKelas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Tambah Kelas"
+        android:src="@drawable/tambah"
+        android:tint="@android:color/white"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/design_default_color_primary"
+        app:layout_anchor="@id/listViewKelas" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
