@@ -14,7 +14,18 @@
     <ListView
         android:id="@+id/listViewRiwayat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/btnCetakSP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cetak Surat Peringatan"
+        android:layout_marginTop="16dp"
+        android:background="@color/primary_color"
+        android:textColor="@android:color/white"/>
+
 </LinearLayout>
