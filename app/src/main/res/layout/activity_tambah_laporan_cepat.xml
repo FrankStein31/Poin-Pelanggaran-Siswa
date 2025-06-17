@@ -84,9 +84,10 @@
                 android:id="@+id/et_nama_siswa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Masukkan nama lengkap siswa"
+                android:hint="Nama siswa akan muncul otomatis"
                 android:inputType="textPersonName"
-                android:autofillHints="name"
+                android:enabled="false"
+                android:textColor="@color/text_primary"
                 android:minHeight="48dp"
                 android:padding="12dp"
                 android:layout_marginBottom="8dp"/>
@@ -99,13 +100,13 @@
                 android:textSize="16sp"
                 android:layout_marginTop="8dp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/tv_jurusan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Jurusan"
-                android:textSize="16sp"
-                android:layout_marginTop="8dp"
+                android:hint="Jurusan akan muncul otomatis"
+                android:enabled="false"
+                android:textColor="@color/text_primary"
                 android:minHeight="48dp"
                 android:padding="12dp"
                 android:layout_marginBottom="8dp"/>
@@ -118,13 +119,13 @@
                 android:textSize="16sp"
                 android:layout_marginTop="8dp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/tv_kelas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kelas"
-                android:textSize="16sp"
-                android:layout_marginTop="8dp"
+                android:hint="Kelas akan muncul otomatis"
+                android:enabled="false"
+                android:textColor="@color/text_primary"
                 android:minHeight="48dp"
                 android:padding="12dp"
                 android:layout_marginBottom="8dp"/>

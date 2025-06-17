@@ -2,6 +2,8 @@ package fidya.ardani.la
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -141,26 +143,17 @@ class LaporanCepatActivity : AppCompatActivity() {
             tvTanggalPelanggaran.text = "Tanggal: ${laporan.tanggalPelanggaran}"
             tvGuruPiket.text = "Guru Piket: ${laporan.guruPiket}"
 
-            // Debug: Log untuk memeriksa apakah ImageView ditemukan
-            if (imgBuktiPelanggaran == null) {
-                android.util.Log.e("LaporanAdapter", "ImageView tidak ditemukan!")
-            } else {
-                android.util.Log.d("LaporanAdapter", "ImageView ditemukan, setting gambar...")
-            }
-
             // Handle foto bukti
             imgBuktiPelanggaran?.let { imageView ->
                 imageView.visibility = View.VISIBLE
 
                 if (!laporan.fotoBukti.isNullOrEmpty()) {
-                    // Jika ada URL foto, gunakan Glide atau Picasso
                     Glide.with(context)
                         .load(laporan.fotoBukti)
                         .placeholder(android.R.drawable.ic_menu_gallery)
                         .error(android.R.drawable.ic_menu_report_image)
                         .into(imageView)
                 } else {
-                    // Placeholder untuk tidak ada foto
                     imageView.setImageResource(android.R.drawable.ic_menu_gallery)
                     imageView.setBackgroundColor(context.getColor(android.R.color.background_light))
                     imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
@@ -173,7 +166,7 @@ class LaporanCepatActivity : AppCompatActivity() {
         }
     }
 
-    // Updated Data class untuk Laporan
+    // Data class untuk Laporan
     data class Laporan(
         val namaSiswa: String,
         val nis: String,
