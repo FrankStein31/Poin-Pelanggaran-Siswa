@@ -1,45 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:background="@android:color/white">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
 
-    <!-- Nama Siswa -->
-    <TextView
-        android:id="@+id/tv_nama_siswa"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nama Siswa"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-    <!-- Poin Pelanggaran -->
-    <TextView
-        android:id="@+id/tv_poin_pelanggaran"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Poin: 0"
-        android:textSize="14sp"
-        android:paddingTop="4dp" />
+        <!-- Konten Kiri: Informasi -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <!-- Keterangan Pelanggaran -->
-    <TextView
-        android:id="@+id/tv_keterangan_pelanggaran"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Keterangan: Tidak memakai atribut lengkap"
-        android:textSize="14sp"
-        android:paddingTop="2dp" />
+            <TextView
+                android:id="@+id/tv_nama_siswa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nama Siswa"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-    <!-- Tanggal Pelanggaran -->
-    <TextView
-        android:id="@+id/tv_tanggal_pelanggaran"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tanggal: 01-01-2024"
-        android:textSize="14sp"
-        android:paddingTop="2dp" />
+            <TextView
+                android:id="@+id/tv_poin_pelanggaran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Poin: 0"
+                android:textSize="14sp"
+                android:paddingTop="4dp" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/tv_keterangan_pelanggaran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Keterangan: -"
+                android:textSize="14sp"
+                android:paddingTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_tanggal_pelanggaran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tanggal: -"
+                android:textSize="14sp"
+                android:paddingTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_guru_piket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pelapor: -"
+                android:textSize="14sp"
+                android:paddingTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Konten Kanan: Foto Bukti -->
+        <ImageView
+            android:id="@+id/img_bukti_pelanggaran"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:contentDescription="Foto Bukti"
+            android:background="#E0E0E0" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

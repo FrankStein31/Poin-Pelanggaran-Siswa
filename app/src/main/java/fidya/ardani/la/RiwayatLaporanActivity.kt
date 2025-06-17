@@ -11,12 +11,17 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class RiwayatLaporanActivity : AppCompatActivity() {
 
     private lateinit var listViewRiwayatLaporan: ListView
+    private lateinit var rvRingkasanPoin: RecyclerView
     private lateinit var laporanList: MutableList<Laporan>
-    private lateinit var laporanAdapter: LaporanAdapter
+    private lateinit var ringkasanList: MutableList<RingkasanPoin>
+    private lateinit var laporanAdapter: BaseAdapter
+    private lateinit var ringkasanAdapter: RingkasanPoinAdapter
     private lateinit var btnCetakSP: Button
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
@@ -24,6 +29,10 @@ class RiwayatLaporanActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Inisialisasi list
+        laporanList = mutableListOf()
+        ringkasanList = mutableListOf()
         
         // Cek email dari intent (untuk siswa) atau langsung load semua data (untuk guru)
         val userEmail = intent.getStringExtra("USER_EMAIL")
@@ -39,21 +48,77 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                 toolbar.setNavigationOnClickListener { finish() }
             }
             
+            // Setup adapter khusus untuk siswa
+            laporanAdapter = RiwayatSiswaAdapter(this, laporanList)
+            listViewRiwayatLaporan.adapter = laporanAdapter
+            
             loadRiwayatLaporanSiswa(userEmail)
         } else {
             // Layout untuk guru BK dengan tombol cetak SP
             setContentView(R.layout.activity_riwayat_laporan_siswa)
             listViewRiwayatLaporan = findViewById(R.id.listViewRiwayat)
+            rvRingkasanPoin = findViewById(R.id.rv_ringkasan_poin)
             btnCetakSP = findViewById(R.id.btnCetakSP)
+            
+            // Setup adapters
+            laporanAdapter = LaporanAdapter(this, laporanList)
+            listViewRiwayatLaporan.adapter = laporanAdapter
+            
+            setupRecyclerView()
+            loadRingkasanPoinSiswa()
+            
             btnCetakSP.setOnClickListener {
                 cetakSuratPeringatan()
             }
             loadRiwayatLaporan()
         }
+    }
 
-        laporanList = mutableListOf()
-        laporanAdapter = LaporanAdapter(this, laporanList)
-        listViewRiwayatLaporan.adapter = laporanAdapter
+    private fun setupRecyclerView() {
+        rvRingkasanPoin.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        ringkasanAdapter = RingkasanPoinAdapter(ringkasanList)
+        rvRingkasanPoin.adapter = ringkasanAdapter
+    }
+
+    private fun loadRingkasanPoinSiswa() {
+        db.collection("siswa").get()
+            .addOnSuccessListener { siswaDocuments ->
+                for (siswaDoc in siswaDocuments) {
+                    val namaSiswa = siswaDoc.getString("nama") ?: continue
+                    val nis = siswaDoc.getString("nis") ?: continue
+
+                    // Hitung total poin untuk setiap siswa
+                    db.collection("laporan_pelanggaran")
+                        .whereEqualTo("nis", nis)
+                        .get()
+                        .addOnSuccessListener { laporanDocs ->
+                            var totalPoin = 0
+                            var processedReports = 0
+                            val totalReports = laporanDocs.size()
+
+                            for (laporanDoc in laporanDocs) {
+                                val poinPelanggaran = laporanDoc.getString("poin_pelanggaran") ?: continue
+                                
+                                db.collection("data_poin")
+                                    .whereEqualTo("nama", poinPelanggaran)
+                                    .get()
+                                    .addOnSuccessListener { poinDocs ->
+                                        if (!poinDocs.isEmpty) {
+                                            val poin = poinDocs.documents[0].getLong("jumlah")?.toInt() ?: 0
+                                            totalPoin += poin
+                                        }
+                                        
+                                        processedReports++
+                                        if (processedReports == totalReports) {
+                                            ringkasanList.add(RingkasanPoin(namaSiswa, totalPoin))
+                                            ringkasanList.sortByDescending { it.totalPoin }
+                                            ringkasanAdapter.notifyDataSetChanged()
+                                        }
+                                    }
+                            }
+                        }
+                }
+            }
     }
 
     private fun cetakSuratPeringatan() {
@@ -174,8 +239,16 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                                 val namaSiswa = document.getString("nama_siswa") ?: "Tidak Diketahui"
                                 val kategoriPelanggaran = document.getString("poin_pelanggaran") ?: "Tidak Diketahui"
                                 val tanggalPelanggaran = document.getString("tanggal_pelanggaran") ?: "Tidak Diketahui"
+                                val guruPiket = document.getString("guru_piket") ?: "Tidak Diketahui"
+                                val fotoBukti = document.getString("foto_bukti")
 
-                                val laporan = Laporan(namaSiswa, kategoriPelanggaran, tanggalPelanggaran)
+                                val laporan = Laporan(
+                                    namaSiswa = namaSiswa,
+                                    kategoriPelanggaran = kategoriPelanggaran,
+                                    tanggalPelanggaran = tanggalPelanggaran,
+                                    guruPiket = guruPiket,
+                                    fotoBukti = fotoBukti
+                                )
                                 tempList.add(laporan)
 
                                 // Ambil jumlah poin
@@ -231,8 +304,16 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                     val namaSiswa = document.getString("nama_siswa") ?: "Tidak Diketahui"
                     val kategoriPelanggaran = document.getString("poin_pelanggaran") ?: "Tidak Diketahui"
                     val tanggalPelanggaran = document.getString("tanggal_pelanggaran") ?: "Tidak Diketahui"
+                    val guruPiket = document.getString("guru_piket") ?: "Tidak Diketahui"
+                    val fotoBukti = document.getString("foto_bukti")
 
-                    val laporan = Laporan(namaSiswa, kategoriPelanggaran, tanggalPelanggaran)
+                    val laporan = Laporan(
+                        namaSiswa = namaSiswa,
+                        kategoriPelanggaran = kategoriPelanggaran,
+                        tanggalPelanggaran = tanggalPelanggaran,
+                        guruPiket = guruPiket,
+                        fotoBukti = fotoBukti
+                    )
                     tempList.add(laporan)
 
                     // Ambil jumlah poin
@@ -269,6 +350,13 @@ class RiwayatLaporanActivity : AppCompatActivity() {
         val namaSiswa: String,
         val kategoriPelanggaran: String,
         val tanggalPelanggaran: String,
+        val guruPiket: String = "",
+        val fotoBukti: String? = null,
         var jumlahPoin: Int = 0
+    )
+
+    data class RingkasanPoin(
+        val namaSiswa: String,
+        val totalPoin: Int
     )
 }

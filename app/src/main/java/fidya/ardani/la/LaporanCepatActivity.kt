@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
+import com.bumptech.glide.Glide
 
 class LaporanCepatActivity : AppCompatActivity() {
 
@@ -153,17 +154,11 @@ class LaporanCepatActivity : AppCompatActivity() {
 
                 if (!laporan.fotoBukti.isNullOrEmpty()) {
                     // Jika ada URL foto, gunakan Glide atau Picasso
-                    // Glide.with(context)
-                    //     .load(laporan.fotoBukti)
-                    //     .placeholder(android.R.drawable.ic_menu_gallery)
-                    //     .error(android.R.drawable.ic_menu_report_image)
-                    //     .into(imageView)
-
-                    // Sementara gunakan placeholder untuk foto yang ada
-                    imageView.setImageResource(android.R.drawable.ic_menu_camera)
-                    imageView.setBackgroundColor(context.getColor(android.R.color.darker_gray))
-                    imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    imageView.setPadding(8, 8, 8, 8)
+                    Glide.with(context)
+                        .load(laporan.fotoBukti)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .error(android.R.drawable.ic_menu_report_image)
+                        .into(imageView)
                 } else {
                     // Placeholder untuk tidak ada foto
                     imageView.setImageResource(android.R.drawable.ic_menu_gallery)

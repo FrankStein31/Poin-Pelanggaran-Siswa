@@ -5,6 +5,34 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <!-- Ringkasan Poin Per Siswa -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ringkasan Poin Siswa"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_ringkasan_poin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="150dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
