@@ -1,13 +1,26 @@
 package fidya.ardani.la
 
+import android.Manifest
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
 import android.view.MenuItem
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.*
 
 class TambahLaporanCepatActivity : AppCompatActivity() {
@@ -23,12 +36,50 @@ class TambahLaporanCepatActivity : AppCompatActivity() {
     private lateinit var tvGuruPiket: TextView
     private lateinit var topAppBar: MaterialToolbar
 
+    // Komponen untuk upload foto
+    private lateinit var imagePreview: ImageView
+    private lateinit var btnCamera: Button
+    private lateinit var btnGallery: Button
+
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
     private val poinList = mutableListOf<String>()
     private val poinMap = mutableMapOf<String, Int>()
     private val siswaRef = db.collection("siswa")
 
     private var namaGuruPiketHariIni: String = ""
+    private var selectedImageUri: Uri? = null
+    private var capturedImageBitmap: Bitmap? = null
+
+    // Activity Result Launchers
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as? Bitmap
+            imageBitmap?.let {
+                capturedImageBitmap = it
+                selectedImageUri = null
+                imagePreview.setImageBitmap(it)
+            }
+        }
+    }
+
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.data?.let { uri ->
+                selectedImageUri = uri
+                capturedImageBitmap = null
+                imagePreview.setImageURI(uri)
+            }
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            Toast.makeText(this, "Izin kamera diperlukan untuk mengambil foto", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +96,11 @@ class TambahLaporanCepatActivity : AppCompatActivity() {
         btnSimpan = findViewById(R.id.btn_simpan)
         tvJumlahPoin = findViewById(R.id.tv_jumlah_poin)
         tvGuruPiket = findViewById(R.id.tv_guru_piket)
+
+        // Inisialisasi komponen upload foto
+        imagePreview = findViewById(R.id.image_preview)
+        btnCamera = findViewById(R.id.btn_camera)
+        btnGallery = findViewById(R.id.btn_gallery)
 
         setSupportActionBar(topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -90,6 +146,15 @@ class TambahLaporanCepatActivity : AppCompatActivity() {
             showDatePickerDialog()
         }
 
+        // Listener untuk tombol foto
+        btnCamera.setOnClickListener {
+            checkCameraPermissionAndOpen()
+        }
+
+        btnGallery.setOnClickListener {
+            openGallery()
+        }
+
         spinnerPoin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
                 val selectedPoin = spinnerPoin.selectedItem.toString()
@@ -108,6 +173,36 @@ class TambahLaporanCepatActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun checkCameraPermissionAndOpen() {
+        when {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+                openCamera()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) -> {
+                Toast.makeText(this, "Izin kamera diperlukan untuk mengambil foto", Toast.LENGTH_LONG).show()
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(packageManager) != null) {
+            cameraLauncher.launch(intent)
+        } else {
+            Toast.makeText(this, "Kamera tidak tersedia", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        galleryLauncher.launch(intent)
     }
 
     private fun loadPoinPelgaraan() {
@@ -213,6 +308,44 @@ class TambahLaporanCepatActivity : AppCompatActivity() {
         tvKelas.text = "Kelas"
     }
 
+    private fun uploadImageToFirebaseStorage(callback: (String?) -> Unit) {
+        val imageRef = storage.reference.child("laporan_images/${UUID.randomUUID()}.jpg")
+
+        when {
+            selectedImageUri != null -> {
+                // Upload dari galeri
+                imageRef.putFile(selectedImageUri!!)
+                    .addOnSuccessListener {
+                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+                            callback(uri.toString())
+                        }
+                    }
+                    .addOnFailureListener {
+                        callback(null)
+                    }
+            }
+            capturedImageBitmap != null -> {
+                // Upload dari kamera
+                val baos = ByteArrayOutputStream()
+                capturedImageBitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val data = baos.toByteArray()
+
+                imageRef.putBytes(data)
+                    .addOnSuccessListener {
+                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+                            callback(uri.toString())
+                        }
+                    }
+                    .addOnFailureListener {
+                        callback(null)
+                    }
+            }
+            else -> {
+                callback(null)
+            }
+        }
+    }
+
     private fun saveLaporan() {
         val nis = etNis.text.toString()
         val namaSiswa = etNamaSiswa.text.toString()
@@ -235,15 +368,41 @@ class TambahLaporanCepatActivity : AppCompatActivity() {
             "guru_piket" to guruPiket
         )
 
-        db.collection("laporan_pelanggaran")
-            .add(laporan)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Laporan berhasil disimpan", Toast.LENGTH_SHORT).show()
-                finish()
+        // Jika ada foto, upload dulu
+        if (selectedImageUri != null || capturedImageBitmap != null) {
+            btnSimpan.isEnabled = false
+            btnSimpan.text = "Mengupload foto..."
+
+            uploadImageToFirebaseStorage { imageUrl ->
+                if (imageUrl != null) {
+                    laporan["foto_bukti"] = imageUrl
+                }
+
+                // Simpan laporan
+                db.collection("laporan_pelanggaran")
+                    .add(laporan)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Laporan berhasil disimpan", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Gagal menyimpan laporan", Toast.LENGTH_SHORT).show()
+                        btnSimpan.isEnabled = true
+                        btnSimpan.text = "Simpan Laporan"
+                    }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal menyimpan laporan", Toast.LENGTH_SHORT).show()
-            }
+        } else {
+            // Simpan tanpa foto
+            db.collection("laporan_pelanggaran")
+                .add(laporan)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Laporan berhasil disimpan", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Gagal menyimpan laporan", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
     private fun showDatePickerDialog() {

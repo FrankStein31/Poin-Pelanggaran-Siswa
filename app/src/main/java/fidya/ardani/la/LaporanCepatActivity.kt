@@ -2,8 +2,12 @@ package fidya.ardani.la
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,8 +17,7 @@ class LaporanCepatActivity : AppCompatActivity() {
     private lateinit var fabTambahLaporan: FloatingActionButton
     private lateinit var listViewLaporan: ListView
     private lateinit var laporanList: MutableList<Laporan>
-    private lateinit var laporanAdapter: ArrayAdapter<Laporan>
-
+    private lateinit var laporanAdapter: LaporanAdapter
     private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +36,10 @@ class LaporanCepatActivity : AppCompatActivity() {
 
         fabTambahLaporan = findViewById(R.id.btn_tambah_laporan)
         listViewLaporan = findViewById(R.id.list_view_laporan)
-
         laporanList = mutableListOf()
 
-        // Adapter untuk ListView
-        laporanAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, laporanList)
+        // Custom adapter untuk ListView dengan layout item_laporan
+        laporanAdapter = LaporanAdapter(this, laporanList)
         listViewLaporan.adapter = laporanAdapter
 
         // Load data laporan dari Firestore
@@ -45,7 +47,7 @@ class LaporanCepatActivity : AppCompatActivity() {
 
         // Aksi tombol FloatingActionButton "Tambah Laporan"
         fabTambahLaporan.setOnClickListener {
-          val intent = Intent(this, TambahLaporanCepatActivity::class.java)
+            val intent = Intent(this, TambahLaporanCepatActivity::class.java)
             intent.putExtra("nama_guru", namaGuru)
             startActivity(intent)
         }
@@ -65,9 +67,24 @@ class LaporanCepatActivity : AppCompatActivity() {
                 laporanList.clear()
                 for (document in result) {
                     val namaSiswa = document.getString("nama_siswa") ?: "Tidak Diketahui"
+                    val nis = document.getString("nis") ?: "Tidak Diketahui"
+                    val jurusan = document.getString("jurusan") ?: "Tidak Diketahui"
+                    val kelas = document.getString("kelas") ?: "Tidak Diketahui"
                     val poinPelanggaran = document.getString("poin_pelanggaran") ?: "Tidak Diketahui"
                     val tanggalPelanggaran = document.getString("tanggal_pelanggaran") ?: "Tidak Diketahui"
-                    val laporan = Laporan(namaSiswa, poinPelanggaran, tanggalPelanggaran)
+                    val guruPiket = document.getString("guru_piket") ?: "Tidak Diketahui"
+                    val fotoBukti = document.getString("foto_bukti") // URL gambar jika ada
+
+                    val laporan = Laporan(
+                        namaSiswa = namaSiswa,
+                        nis = nis,
+                        jurusan = jurusan,
+                        kelas = kelas,
+                        poinPelanggaran = poinPelanggaran,
+                        tanggalPelanggaran = tanggalPelanggaran,
+                        guruPiket = guruPiket,
+                        fotoBukti = fotoBukti
+                    )
                     laporanList.add(laporan)
                 }
                 laporanAdapter.notifyDataSetChanged()
@@ -88,10 +105,88 @@ class LaporanCepatActivity : AppCompatActivity() {
         const val ADD_LAPORAN_REQUEST_CODE = 1
     }
 
-    // Data class untuk Laporan
-    data class Laporan(val namaSiswa: String, val poinPelanggaran: String, val tanggalPelanggaran: String) {
-        override fun toString(): String {
-            return "$namaSiswa - $poinPelanggaran - $tanggalPelanggaran"
+    // Custom Adapter untuk ListView
+    class LaporanAdapter(
+        private val context: AppCompatActivity,
+        private val laporanList: List<Laporan>
+    ) : BaseAdapter() {
+
+        override fun getCount(): Int = laporanList.size
+
+        override fun getItem(position: Int): Any = laporanList[position]
+
+        override fun getItemId(position: Int): Long = position.toLong()
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            val view = convertView ?: LayoutInflater.from(context)
+                .inflate(R.layout.item_laporan, parent, false)
+
+            val laporan = laporanList[position]
+
+            // Bind data ke views
+            val tvNamaSiswa = view.findViewById<TextView>(R.id.tv_nama_siswa)
+            val tvNis = view.findViewById<TextView>(R.id.tv_nis)
+            val tvJurusanKelas = view.findViewById<TextView>(R.id.tv_jurusan_kelas)
+            val tvPoinPelanggaran = view.findViewById<TextView>(R.id.tv_poin_pelanggaran)
+            val tvTanggalPelanggaran = view.findViewById<TextView>(R.id.tv_tanggal_pelanggaran)
+            val tvGuruPiket = view.findViewById<TextView>(R.id.tv_guru_piket)
+            val imgBuktiPelanggaran = view.findViewById<ImageView>(R.id.img_bukti_pelanggaran)
+
+            // Set data
+            tvNamaSiswa.text = laporan.namaSiswa
+            tvNis.text = "NIS: ${laporan.nis}"
+            tvJurusanKelas.text = "Jurusan: ${laporan.jurusan} | Kelas: ${laporan.kelas}"
+            tvPoinPelanggaran.text = "Poin Pelanggaran: ${laporan.poinPelanggaran}"
+            tvTanggalPelanggaran.text = "Tanggal: ${laporan.tanggalPelanggaran}"
+            tvGuruPiket.text = "Guru Piket: ${laporan.guruPiket}"
+
+            // Debug: Log untuk memeriksa apakah ImageView ditemukan
+            if (imgBuktiPelanggaran == null) {
+                android.util.Log.e("LaporanAdapter", "ImageView tidak ditemukan!")
+            } else {
+                android.util.Log.d("LaporanAdapter", "ImageView ditemukan, setting gambar...")
+            }
+
+            // Handle foto bukti
+            imgBuktiPelanggaran?.let { imageView ->
+                imageView.visibility = View.VISIBLE
+
+                if (!laporan.fotoBukti.isNullOrEmpty()) {
+                    // Jika ada URL foto, gunakan Glide atau Picasso
+                    // Glide.with(context)
+                    //     .load(laporan.fotoBukti)
+                    //     .placeholder(android.R.drawable.ic_menu_gallery)
+                    //     .error(android.R.drawable.ic_menu_report_image)
+                    //     .into(imageView)
+
+                    // Sementara gunakan placeholder untuk foto yang ada
+                    imageView.setImageResource(android.R.drawable.ic_menu_camera)
+                    imageView.setBackgroundColor(context.getColor(android.R.color.darker_gray))
+                    imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    imageView.setPadding(8, 8, 8, 8)
+                } else {
+                    // Placeholder untuk tidak ada foto
+                    imageView.setImageResource(android.R.drawable.ic_menu_gallery)
+                    imageView.setBackgroundColor(context.getColor(android.R.color.background_light))
+                    imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    imageView.alpha = 0.6f
+                    imageView.setPadding(12, 12, 12, 12)
+                }
+            }
+
+            return view
         }
     }
+
+    // Updated Data class untuk Laporan
+    data class Laporan(
+        val namaSiswa: String,
+        val nis: String,
+        val jurusan: String,
+        val kelas: String,
+        val poinPelanggaran: String,
+        val tanggalPelanggaran: String,
+        val guruPiket: String,
+        val fotoBukti: String? = null
+    )
 }

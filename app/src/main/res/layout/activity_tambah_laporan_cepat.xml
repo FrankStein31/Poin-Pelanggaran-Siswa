@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Toolbar dengan icon back -->
+    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="Tambah Laporan Pelanggaran" />
 
-    <!-- Konten utama -->
+    <!-- ScrollView berisi konten utama -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -154,6 +154,49 @@
                 android:layout_marginBottom="8dp"
                 android:minHeight="48dp"
                 android:padding="12dp"/>
+
+            <!-- Upload Foto -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Foto Bukti Pelanggaran"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"/>
+
+            <ImageView
+                android:id="@+id/image_preview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="#E0E0E0" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btn_camera"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Kamera" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/btn_gallery"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Galeri" />
+            </LinearLayout>
 
             <!-- Tanggal Pelanggaran -->
             <TextView
