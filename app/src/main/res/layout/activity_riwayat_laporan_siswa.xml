@@ -1,59 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- Ringkasan Poin Per Siswa -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-        
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="12dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Ringkasan Poin Siswa"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_ringkasan_poin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="150dp"/>
+                android:maxHeight="150dp" />
+
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
-    <SearchView
-        android:id="@+id/searchView"
+    <!-- Export Excel Button -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Cari nama siswa" />
+        android:layout_marginBottom="16dp"
+        android:gravity="center"/>
 
-    <ListView
-        android:id="@+id/listViewRiwayat"
+    <!-- Search View -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
+
+        <SearchView
+            android:id="@+id/sv_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:iconifiedByDefault="false"
+            android:queryHint="Cari nama siswa" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- List View Riwayat -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
 
-    <Button
-        android:id="@+id/btnCetakSP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cetak Surat Peringatan"
-        android:layout_marginTop="16dp"
-        android:background="@color/primary_color"
-        android:textColor="@android:color/white"/>
+        <ListView
+            android:id="@+id/listViewRiwayat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:padding="8dp"
+            android:scrollbars="vertical" />
+
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

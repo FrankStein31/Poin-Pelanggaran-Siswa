@@ -6,6 +6,8 @@ import android.content.Intent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -69,26 +71,55 @@ class LoginActivity : AppCompatActivity() {
                             } else {
                                 // Tidak ditemukan di guru_bk, cek guru_piket
                                 db.collection("guru_piket").whereEqualTo("email", email).get()
-                                    .addOnSuccessListener { guruPiketDocs ->
-                                        if (!guruPiketDocs.isEmpty) {
-                                        val namaGuru = guruPiketDocs.documents[0].getString("nama") ?: "Guru Piket"
-                                        Toast.makeText(this, "Login sebagai Guru Piket", Toast.LENGTH_SHORT).show()
+                                .addOnSuccessListener { guruPiketDocs ->
+                                    if (!guruPiketDocs.isEmpty) {
+                                        val guruDoc = guruPiketDocs.documents[0]
+                                        val namaGuru = guruDoc.getString("nama") ?: "Guru Piket"
+                                        val guruId = guruDoc.id
 
-                                        val intent = Intent(this, DashboardGuruPiketActivity::class.java)
-                                        intent.putExtra("nama_guru", namaGuru)
-                                        startActivity(intent)
-                                        finish()
+                                        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                                        val currentTime = SimpleDateFormat("HH.mm", Locale.getDefault()).format(Date()) // pakai titik bukan titik dua
 
-                                        } else {
-                                            // Tidak ditemukan di semua koleksi
-                                            Toast.makeText(this, "Role user tidak ditemukan di database!", Toast.LENGTH_SHORT).show()
-                                            auth.signOut()
-                                        }
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Gagal cek role: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        db.collection("jadwal_piket")
+                                            .whereEqualTo("guru_id", guruId)
+                                            .whereEqualTo("tanggal", currentDate)
+                                            .get()
+                                            .addOnSuccessListener { jadwalDocs ->
+                                                val aktifSekarang = jadwalDocs.any { doc ->
+                                                    val jamStr = doc.getString("jam") ?: return@any false
+                                                    val jamParts = jamStr.split(" - ")
+                                                    if (jamParts.size != 2) return@any false
+                                                    val jamMulai = jamParts[0]
+                                                    val jamSelesai = jamParts[1]
+                                                    currentTime >= jamMulai && currentTime <= jamSelesai
+                                                }
+
+                                                if (aktifSekarang) {
+                                                    Toast.makeText(this, "Login sebagai Guru Piket", Toast.LENGTH_SHORT).show()
+                                                    val intent = Intent(this, DashboardGuruPiketActivity::class.java)
+                                                    intent.putExtra("nama_guru", namaGuru)
+                                                    startActivity(intent)
+                                                    finish()
+                                                } else {
+                                                    Toast.makeText(this, "Anda tidak memiliki jadwal piket saat ini!", Toast.LENGTH_SHORT).show()
+                                                    auth.signOut()
+                                                }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(this, "Gagal cek jadwal piket: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                auth.signOut()
+                                            }
+
+                                    } else {
+                                        Toast.makeText(this, "Role user tidak ditemukan di database!", Toast.LENGTH_SHORT).show()
                                         auth.signOut()
                                     }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Gagal cek role: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    auth.signOut()
+                                }
+
                             }
                         }
                         .addOnFailureListener { e ->

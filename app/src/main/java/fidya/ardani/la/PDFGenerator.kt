@@ -17,8 +17,8 @@ class PDFGenerator(private val context: Context) {
         nis: String,
         kelas: String,
         totalPoin: Int,
-        namaKepsek: String = "Drs. SUPRIYADI, M.Pd",
-        nipKepsek: String = "19640410 198903 1 014"
+        namaKepsek: String = "Supriyono, S.Kom., M.A.P.",
+        nipKepsek: String = "19240603 200604 1 019"
     ): File {
         // Inflate template layout
         val view = LayoutInflater.from(context).inflate(R.layout.template_surat_peringatan, null)
@@ -29,18 +29,28 @@ class PDFGenerator(private val context: Context) {
         view.findViewById<TextView>(R.id.tvKelas).text = kelas
         view.findViewById<TextView>(R.id.tvTotalPoin).text = totalPoin.toString()
 
+        // Set nama dan NIP Kepala Sekolah
+        view.findViewById<TextView>(R.id.tvKepsek).text = namaKepsek
+        view.findViewById<TextView>(R.id.tvNip).text = "NIP. $nipKepsek"
+
+        // Tentukan judul surat berdasarkan total poin
+        val judulSurat = when {
+            totalPoin >= 200 -> "SURAT PANGGILAN ORANGTUA"
+            totalPoin >= 100 -> "SURAT TEGURAN II"
+            totalPoin >= 50 -> "SURAT TEGURAN I"
+            else -> "SURAT PERINGATAN"
+        }
+        view.findViewById<TextView>(R.id.tvJudul).text = judulSurat
+
         // Set tanggal
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id"))
         view.findViewById<TextView>(R.id.tvTanggal).text = "Nganjuk, ${dateFormat.format(Date())}"
 
         // Buat PDF Document
         val document = PdfDocument()
-        
-        // Ukuran A4 dalam pixels (300 dpi)
         val pageWidth = 2480
         val pageHeight = 3508
 
-        // Buat halaman PDF
         val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
         val page = document.startPage(pageInfo)
 
@@ -57,13 +67,13 @@ class PDFGenerator(private val context: Context) {
         // Simpan PDF
         val fileName = "SP_${namaSiswa.replace(" ", "_")}_${System.currentTimeMillis()}.pdf"
         val file = File(context.getExternalFilesDir(null), fileName)
-        
+
         FileOutputStream(file).use { out ->
             document.writeTo(out)
         }
-        
+
         document.close()
-        
         return file
     }
-} 
+}
+

@@ -82,13 +82,14 @@
         android:layout_marginBottom="24dp"/>
 
     <TextView
+        android:id="@+id/tvJudul"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SURAT PERINGATAN"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
         android:gravity="center"
-        android:layout_marginBottom="24dp"/>
+        android:text="SURAT TEGURAN"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -226,15 +227,17 @@
             android:text="Kepala Sekolah"/>
 
         <TextView
+            android:id="@+id/tvKepsek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
-            android:text="[Nama Kepala Sekolah]"/>
+            android:text="[Nama Kepala Sekolah]" />
 
         <TextView
+            android:id="@+id/tvNip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NIP. [NIP Kepala Sekolah]"/>
+            android:text="NIP. [NIP Kepala Sekolah]" />
     </LinearLayout>
 
 </LinearLayout> 
