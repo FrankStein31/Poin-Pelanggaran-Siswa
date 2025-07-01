@@ -20,7 +20,6 @@
             app:titleTextColor="@android:color/white"
             app:menu="@menu/menu_filter">
 
-            <!-- Back button (dalam Toolbar untuk ketepatan dengan kode Kotlin) -->
             <ImageView
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
@@ -45,8 +44,51 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:divider="#CCCCCC"
-            android:dividerHeight="1dp" />
+            android:divider="@null"
+            android:dividerHeight="0dp" />
+
+        <!-- Kontrol Paginasi -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="#F5F5F5">
+
+            <Button
+                android:id="@+id/btnPrev"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Sebelumnya" />
+
+            <TextView
+                android:id="@+id/tvPageInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Halaman 1 dari 1" />
+
+            <Button
+                android:id="@+id/btnNext"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="Berikutnya" />
+
+        </RelativeLayout>
+
+        <!-- Info Jumlah Baris -->
+        <TextView
+            android:id="@+id/tvRowCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="#E0E0E0"
+            android:text="Menampilkan 0 dari 0 siswa"/>
+
     </LinearLayout>
 
     <!-- Floating Action Button -->
@@ -55,7 +97,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="100dp"
         android:contentDescription="Tambah Data Siswa"
         app:srcCompat="@drawable/tambah"
         app:backgroundTint="#3F51B5"
