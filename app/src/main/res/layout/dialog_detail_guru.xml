@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/detailImgGuru"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        tools:src="@drawable/ic_person"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#3F51B5"/>
+
+    <TextView android:id="@+id/detailNama" style="@style/DetailTextStyle" tools:text="Nama: Nama Guru"/>
+    <TextView android:id="@+id/detailNip" style="@style/DetailTextStyle" tools:text="NIP: 123456789"/>
+    <TextView android:id="@+id/detailNoHp" style="@style/DetailTextStyle" tools:text="No. HP: 081234567890"/>
+    <TextView android:id="@+id/detailAlamat" style="@style/DetailTextStyle" tools:text="Alamat: Alamat Lengkap Guru"/>
+    <TextView android:id="@+id/detailJadwalPiket" style="@style/DetailTextStyle" tools:text="Jadwal Piket: Senin, Rabu"/>
+    <TextView android:id="@+id/detailEmail" style="@style/DetailTextStyle" tools:text="Email: guru@example.com"/>
+
+</LinearLayout>

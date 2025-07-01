@@ -1,7 +1,9 @@
 package fidya.ardani.la
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
@@ -27,6 +29,12 @@ class DetailPelanggaranActivity : AppCompatActivity() {
     private var currentKelas: String = ""
     private var isSuratSudahDicetak = false // Flag untuk mengecek apakah surat sudah dicetak
 
+    private lateinit var btnHubungiSiswa: Button
+    private lateinit var btnHubungiOrtu: Button
+    private var noHpSiswa: String = ""
+    private var noHpOrtu: String = ""
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_pelanggaran)
@@ -34,6 +42,9 @@ class DetailPelanggaranActivity : AppCompatActivity() {
         tvJudulPelanggaran = findViewById(R.id.tvJudulPelanggaran)
         listViewPelanggaran = findViewById(R.id.listViewPelanggaran)
         btnCetakSP = findViewById(R.id.btnCetakSP)
+
+        btnHubungiSiswa = findViewById(R.id.btn_hubungi_siswa)
+        btnHubungiOrtu = findViewById(R.id.btn_hubungi_ortu)
 
         val namaSiswa = intent.getStringExtra("nama_siswa")
         if (namaSiswa.isNullOrEmpty()) {
@@ -50,6 +61,13 @@ class DetailPelanggaranActivity : AppCompatActivity() {
         // Setup tombol cetak
         btnCetakSP.setOnClickListener {
             cetakSuratPeringatan()
+        }
+        // Setup tombol hubungi siswa dan orang tua
+        btnHubungiSiswa.setOnClickListener {
+            showContactOptions(noHpSiswa, "Siswa ($currentNamaSiswa)")
+        }
+        btnHubungiOrtu.setOnClickListener {
+            showContactOptions(noHpOrtu, "Orang Tua ($currentNamaSiswa)")
         }
 
         // Ambil data siswa terlebih dahulu untuk mendapatkan NIS dan kelas
@@ -124,6 +142,12 @@ class DetailPelanggaranActivity : AppCompatActivity() {
                     val siswa = documents.documents[0]
                     currentNis = siswa.getString("nis") ?: ""
                     currentKelas = siswa.getString("kelas") ?: ""
+
+                    noHpSiswa = siswa.getString("noHp") ?: ""
+                    noHpOrtu = siswa.getString("noHpOrtu") ?: ""
+
+                    // --- UPDATE TAMPILAN TOMBOL ---
+                    updateContactButtonsState()
                 }
                 // Setelah mendapat data siswa, ambil data pelanggaran
                 ambilDataPelanggaran(namaSiswa)
@@ -132,6 +156,66 @@ class DetailPelanggaranActivity : AppCompatActivity() {
                 // Jika gagal ambil data siswa, tetap lanjutkan ambil pelanggaran
                 ambilDataPelanggaran(namaSiswa)
             }
+    }
+
+    // Fungsi untuk menampilkan atau menyembunyikan tombol kontak
+    private fun updateContactButtonsState() {
+        if (noHpSiswa.isNotBlank()) {
+            btnHubungiSiswa.visibility = View.VISIBLE
+        } else {
+            btnHubungiSiswa.visibility = View.GONE
+        }
+
+        if (noHpOrtu.isNotBlank()) {
+            btnHubungiOrtu.visibility = View.VISIBLE
+        } else {
+            btnHubungiOrtu.visibility = View.GONE
+        }
+    }
+
+    // Fungsi untuk menampilkan dialog pilihan (Telepon atau WhatsApp)
+    private fun showContactOptions(phoneNumber: String, contactPerson: String) {
+        val options = arrayOf("Telepon (Panggilan Biasa)", "Kirim Pesan WhatsApp")
+
+        AlertDialog.Builder(this)
+            .setTitle("Hubungi $contactPerson")
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> { // Panggilan Telepon
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            data = Uri.parse("tel:$phoneNumber")
+                        }
+                        startActivity(intent)
+                    }
+                    1 -> { // Pesan WhatsApp
+                        val formattedNumber = formatPhoneNumberForWhatsApp(phoneNumber)
+                        val url = "https://api.whatsapp.com/send?phone=$formattedNumber"
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                data = Uri.parse(url)
+                            }
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(this, "Aplikasi WhatsApp tidak terpasang.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    // Fungsi helper untuk memformat nomor HP untuk WhatsApp (mengganti '0' dengan '62')
+    private fun formatPhoneNumberForWhatsApp(number: String): String {
+        val cleanNumber = number.replace(Regex("[^0-9]"), "") // Hapus karakter selain angka
+        return if (cleanNumber.startsWith("0")) {
+            "62" + cleanNumber.substring(1)
+        } else if (cleanNumber.startsWith("62")) {
+            cleanNumber
+        } else {
+            "62$cleanNumber" // Asumsikan nomor lokal tanpa 0
+        }
     }
 
     private fun ambilDataPelanggaran(namaSiswa: String) {

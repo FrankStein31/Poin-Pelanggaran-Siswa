@@ -5,51 +5,65 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import de.hdodenhof.circleimageview.CircleImageView
 import fidya.ardani.la.Guru
 import fidya.ardani.la.R
 
 class GuruAdapter(
     private val context: Context,
-    private val resource: Int,
     private val list: List<Guru>,
-    private val onEdit: (Guru) -> Unit,
-    private val onDelete: (Guru) -> Unit
+    private val listener: AdapterListener
 ) : BaseAdapter() {
 
+    interface AdapterListener {
+        fun onEdit(guru: Guru)
+        fun onDelete(guru: Guru)
+    }
+
     override fun getCount(): Int = list.size
-
     override fun getItem(position: Int): Any = list[position]
-
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
+        val view: View
+        val holder: ViewHolder
+
+        if (convertView == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.list_item_guru, parent, false)
+            holder = ViewHolder(view)
+            view.tag = holder
+        } else {
+            view = convertView
+            holder = view.tag as ViewHolder
+        }
+
         val guru = list[position]
 
-        val txtNama: TextView = view.findViewById(R.id.txtNama)
-        val txtNip: TextView = view.findViewById(R.id.txtNip)
-        val txtEmail: TextView = view.findViewById(R.id.txtEmail)
-        val txtAlamat: TextView = view.findViewById(R.id.txtAlamat)
-        val txtJadwalPiket: TextView = view.findViewById(R.id.txtJadwalPiket)
+        holder.txtNama.text = guru.nama
+        holder.txtNip.text = "NIP: ${guru.nip}"
+        holder.txtJadwalPiket.text = "Piket: ${guru.jadwalPiket}"
 
-        val btnEdit: View = view.findViewById(R.id.btnEdit)
-        val btnDelete: View = view.findViewById(R.id.btnDelete)
-
-        txtNama.text = guru.nama
-        txtNip.text = "NIP: ${guru.nip}"
-        txtEmail.text = "Email: ${guru.email}"
-        txtAlamat.text = "Alamat: ${guru.alamat}"
-        txtJadwalPiket.text = "Jadwal Piket: ${guru.jadwalPiket}"
-
-        btnEdit.setOnClickListener {
-            onEdit(guru)
+        if (guru.fotoProfilUrl.isNotEmpty()) {
+            Glide.with(context).load(guru.fotoProfilUrl).placeholder(R.drawable.ic_person).into(holder.imgProfil)
+        } else {
+            holder.imgProfil.setImageResource(R.drawable.ic_person)
         }
 
-        btnDelete.setOnClickListener {
-            onDelete(guru)
-        }
+        holder.btnEdit.setOnClickListener { listener.onEdit(guru) }
+        holder.btnDelete.setOnClickListener { listener.onDelete(guru) }
 
         return view
+    }
+
+    private class ViewHolder(view: View) {
+        val txtNama: TextView = view.findViewById(R.id.txtNama)
+        val txtNip: TextView = view.findViewById(R.id.txtNip)
+        val txtJadwalPiket: TextView = view.findViewById(R.id.txtJadwalPiket)
+        val imgProfil: CircleImageView = view.findViewById(R.id.imgProfilGuru)
+        val btnEdit: ImageButton = view.findViewById(R.id.btnEdit)
+        val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
     }
 }

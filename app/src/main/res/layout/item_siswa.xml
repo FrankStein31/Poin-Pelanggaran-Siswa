@@ -5,85 +5,99 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Nama Siswa -->
-        <TextView
-            android:id="@+id/tvNamaSiswa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nama Siswa"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="Andi Wijaya" />
+        <!-- Foto Profil Siswa -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgProfil"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_person"
+            app:civ_border_color="#E0E0E0"
+            app:civ_border_width="2dp" />
 
-        <!-- NIS -->
-        <TextView
-            android:id="@+id/tvNIS"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="NIS: "
-            tools:text="NIS: 123456" />
-
-        <!-- Kelas -->
-        <TextView
-            android:id="@+id/tvDetailJurusan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Jurusan: "
-            tools:text="Jurusan: Teknik Elektronik Industri" />
-
-        <!-- Kelas -->
-        <TextView
-            android:id="@+id/tvDetailKelas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Kelas: "
-            tools:text="Kelas: XII IPA 1" />
-
-        <!-- Alamat -->
-        <TextView
-            android:id="@+id/tvDetailAlamat"
-            android:layout_width="match_parent"
-            android:layout_height="31dp"
-            android:layout_marginTop="8dp"
-            android:text="Alamat: "
-            tools:text="Alamat: Jl. Merdeka No. 123" />
-
-        <!-- Tombol Aksi -->
+        <!-- Layout untuk semua teks dan tombol -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:gravity="end">
+            android:layout_toEndOf="@id/imgProfil"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnEdit"
-                android:layout_width="wrap_content"
+            <!-- ... (semua TextView Anda di sini, tidak ada perubahan) ... -->
+            <TextView
+                android:id="@+id/tvNamaSiswa"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit"
-                android:backgroundTint="@color/purple_500"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="8dp"/>
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                tools:text="Andi Wijaya" />
+            <TextView
+                android:id="@+id/tvNIS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                tools:text="NIS: 123456" />
+            <TextView
+                android:id="@+id/tvDetailJurusan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="Jurusan: Teknik Elektronik Industri" />
+            <TextView
+                android:id="@+id/tvDetailKelas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                tools:text="Kelas: XII IPA 1" />
+            <TextView
+                android:id="@+id/tvDetailAlamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                tools:text="Alamat: Jl. Merdeka No. 123" />
 
-            <Button
-                android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
+
+            <!-- Tombol Aksi -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Delete"
-                android:backgroundTint="@color/delete_button_color"
-                android:textColor="@android:color/white"/>
+                android:layout_marginTop="16dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnEdit"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Edit"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    />
+
+                <Button
+                    android:id="@+id/btnDelete"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/delete_button_color"
+                    android:text="Delete"
+                    android:textColor="@android:color/white"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

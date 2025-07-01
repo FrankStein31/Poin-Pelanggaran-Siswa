@@ -347,10 +347,10 @@ class DashboardSiswaActivity : AppCompatActivity(), View.OnClickListener {
                 dialog.dismiss()
             }
 
-            builder.setNegativeButton("Hubungi BK") { dialog, _ ->
-                dialog.dismiss()
-                tampilkanInfoKontakBK()
-            }
+//            builder.setNegativeButton("Hubungi BK") { dialog, _ ->
+//                dialog.dismiss()
+//                tampilkanInfoKontakBK()
+//            }
 
             builder.setCancelable(false)
 
@@ -1001,16 +1001,21 @@ private fun hubungiBKViaWhatsApp() {
         // Tambahkan tombol "Detail Lengkap" untuk melihat detail per pelanggaran
         builder.setNeutralButton("Detail Lengkap") { dialog, _ ->
             dialog.dismiss()
-            showDetailPelanggaran()
+
+            // PERUBAHAN: Buka Activity baru dan kirim data siswa
+            val intent = Intent(this, RiwayatDetailActivity::class.java)
+            intent.putExtra("STUDENT_NIS", nis)
+            intent.putExtra("STUDENT_NAME", namaSiswa)
+            startActivity(intent)
         }
 
         // Tambahkan tombol "Hubungi BK" jika poin >= 25
-        if (totalPoin >= 50) {
-            builder.setNegativeButton("Hubungi BK") { dialog, _ ->
-                dialog.dismiss()
-                tampilkanInfoKontakBK()
-            }
-        }
+//        if (totalPoin >= 50) {
+//            builder.setNegativeButton("Hubungi BK") { dialog, _ ->
+//                dialog.dismiss()
+//                tampilkanInfoKontakBK()
+//            }
+//        }
 
         builder.setCancelable(true)
 
