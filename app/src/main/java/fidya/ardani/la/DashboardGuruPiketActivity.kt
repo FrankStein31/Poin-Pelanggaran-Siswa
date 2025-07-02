@@ -36,15 +36,17 @@ class DashboardGuruPiketActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-            cardQuickReport.setOnClickListener {
-                val intent = Intent(this, LaporanCepatActivity::class.java)
-                intent.putExtra("nama_guru", namaGuru)
-                startActivity(intent)
-            }
+
+        cardQuickReport.setOnClickListener {
+            val intent = Intent(this, LaporanCepatActivity::class.java)
+            intent.putExtra("nama_guru", namaGuru)
+            startActivity(intent)
+        }
 
         cardPiketHariIni.setOnClickListener {
             try {
-                startActivity(Intent(this, PiketHariIniActivity::class.java))
+//                startActivity(Intent(this, PiketHariIniActivity::class.java))
+                startActivity(Intent(this, JadwalSayaActivity::class.java))
             } catch (e: Exception) {
                 Toast.makeText(
                     this, "Fitur Laporan Cepat sedang dalam pengembangan",

@@ -95,8 +95,6 @@ class TambahDataSiswaActivity : AppCompatActivity() {
         btnSimpan = findViewById(R.id.btnSimpan)
         imgProfil = findViewById(R.id.imgProfil)
         btnPilihFoto = findViewById(R.id.btnPilihFoto)
-        // Anda mungkin perlu menambahkan ProgressBar ke XML jika belum ada
-        // progressBar = findViewById(R.id.progressBar)
     }
 
     private fun loadDataJurusan() {
@@ -149,7 +147,7 @@ class TambahDataSiswaActivity : AppCompatActivity() {
 
         setLoading(true)
 
-        // Langkah 1: Jika ada gambar, upload dulu. Jika tidak, langsung ke langkah 2.
+        // Upload foto profil jika ada
         if (imageUri != null) {
             val storageRef = storage.reference.child("foto_profil/${System.currentTimeMillis()}_${auth.uid}.jpg")
             storageRef.putFile(imageUri!!)
@@ -157,7 +155,7 @@ class TambahDataSiswaActivity : AppCompatActivity() {
                     // Jika upload berhasil, dapatkan URL downloadnya
                     storageRef.downloadUrl.addOnSuccessListener { uri ->
                         val fotoUrl = uri.toString()
-                        // Langkah 2: Buat user dan simpan data dengan URL foto
+                        // Buat akun dan simpan data siswa dengan URL foto
                         createUserAndSaveData(nama, nis, jurusan, kelas, alamat, noHp, noHpOrtu, email, password, fotoUrl)
                     }
                 }
@@ -166,37 +164,9 @@ class TambahDataSiswaActivity : AppCompatActivity() {
                     Toast.makeText(this, "Gagal mengunggah foto: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         } else {
-            // Langsung ke langkah 2 tanpa URL foto
+            // Langsung tanpa URL foto
             createUserAndSaveData(nama, nis, jurusan, kelas, alamat, noHp, noHpOrtu, email, password, "")
         }
-
-//        auth.createUserWithEmailAndPassword(email, password)
-//            .addOnSuccessListener { result ->
-//                val uid = result.user?.uid ?: ""
-//
-//                val siswa = hashMapOf(
-//                    "uid" to uid,
-//                    "nama" to nama,
-//                    "nis" to nis,
-//                    "jurusan" to jurusan,
-//                    "kelas" to kelas,
-//                    "alamat" to alamat,
-//                    "email" to email,
-//                    "password" to password,
-//                )
-//
-//                firestore.collection("siswa").document(uid).set(siswa)
-//                    .addOnSuccessListener {
-//                        Toast.makeText(this, "Data siswa berhasil disimpan", Toast.LENGTH_SHORT).show()
-//                        finish()
-//                    }
-//                    .addOnFailureListener {
-//                        Toast.makeText(this, "Gagal menyimpan ke Firestore", Toast.LENGTH_SHORT).show()
-//                    }
-//            }
-//            .addOnFailureListener {
-//                Toast.makeText(this, "Gagal membuat akun: ${it.message}", Toast.LENGTH_LONG).show()
-//            }
     }
 
     private fun createUserAndSaveData(
