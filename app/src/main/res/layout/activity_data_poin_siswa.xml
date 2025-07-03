@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DataPoinActivity">
+    tools:context=".DataPoinSiswaActivity">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -13,18 +13,27 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:title="Data Poin"
-        android:titleTextColor="@android:color/white"
+        android:elevation="4dp"
+        app:title="Data Poin Pelanggaran"
+        app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
     <!-- Konten utama -->
     <LinearLayout
-        android:id="@+id/layout_datapoin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="?attr/actionBarSize"
         android:padding="16dp">
+
+        <!-- Info text -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daftar Poin Pelanggaran"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
 
         <!-- ListView untuk menampilkan data poin -->
         <ListView
@@ -33,7 +42,9 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp" />
+            android:dividerHeight="0.5dp"
+            android:background="@android:color/white"/>
 
     </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -194,7 +194,7 @@ class LaporanCepatActivity : AppCompatActivity() {
         val filteredLaporan = mutableListOf<Laporan>()
         val dateFormat = SimpleDateFormat("d-M-yyyy", Locale.getDefault())
 
-        for (document in result) {
+                for (document in result) {
             val tanggalString = document.getString("tanggal_pelanggaran") ?: ""
             var passFilter = true
 

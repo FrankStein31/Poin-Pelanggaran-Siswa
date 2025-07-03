@@ -56,7 +56,8 @@ class DashboardSiswaActivity : AppCompatActivity(), View.OnClickListener {
 
             R.id.cardDataPoinSaya -> {
                 android.util.Log.d("Dashboard", "Card Data Poin diklik")
-                showDetailPelanggaran()
+                val intent = Intent(this, DataPoinSiswaActivity::class.java)
+                startActivity(intent)
             }
 
             R.id.cardRiwayat -> {
@@ -95,15 +96,17 @@ class DashboardSiswaActivity : AppCompatActivity(), View.OnClickListener {
             cardDataPoinSaya.setOnClickListener(this)
             cardRiwayat.setOnClickListener(this)
 
-            // Set click listener dengan cara alternatif untuk memastikan berfungsi
+            // Set click listener untuk peringatan
             txtPeringatan.setOnClickListener { view ->
                 android.util.Log.d("Dashboard", "txtPeringatan diklik melalui lambda!")
                 showDetailPelanggaran()
             }
 
+            // Set click listener untuk total poin
             txtTotalPoin.setOnClickListener { view ->
                 android.util.Log.d("Dashboard", "txtTotalPoin diklik!")
-                showDetailPelanggaran()
+                val intent = Intent(this, DataPoinSiswaActivity::class.java)
+                startActivity(intent)
             }
 
             android.util.Log.d("Dashboard", "All click listeners set successfully")
@@ -766,12 +769,12 @@ private fun hubungiBKViaWhatsApp() {
         }
 
         // Tambahkan tombol "Hubungi BK" jika poin >= 25
-        if (totalPoin >= 50) {
-            builder.setNegativeButton("Hubungi BK") { dialog, _ ->
-                dialog.dismiss()
-                tampilkanInfoKontakBK()
-            }
-        }
+//        if (totalPoin >= 50) {
+//            builder.setNegativeButton("Hubungi BK") { dialog, _ ->
+//                dialog.dismiss()
+//                tampilkanInfoKontakBK()
+//            }
+//        }
 
         builder.setCancelable(true)
 

@@ -62,16 +62,16 @@ class RiwayatLaporanActivity : AppCompatActivity() {
         // Inisialisasi list
         laporanList = mutableListOf()
         ringkasanList = mutableListOf()
-
+        
         // Cek email dari intent (untuk siswa) atau langsung load semua data (untuk guru)
         val userEmail = intent.getStringExtra("USER_EMAIL")
-
+        
         // Pilih layout berdasarkan role
         if (userEmail != null) {
             // Layout untuk siswa
             setContentView(R.layout.activity_riwayat_laporan)
             listViewRiwayatLaporan = findViewById(R.id.list_view_riwayat_laporan)
-
+            
             // Setup toolbar jika ada
             findViewById<MaterialToolbar>(R.id.topAppBar)?.let { toolbar ->
                 toolbar.setNavigationOnClickListener { finish() }
@@ -80,7 +80,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
             // Setup adapter khusus untuk siswa
             laporanAdapter = RiwayatSiswaAdapter(this, laporanList)
             listViewRiwayatLaporan.adapter = laporanAdapter
-
+            
             loadRiwayatLaporanSiswa(userEmail)
         } else {
             // Layout untuk guru BK (sekarang dengan filter)
@@ -305,7 +305,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
         for (laporan in filteredLaporan) {
             db.collection("data_poin")
                 .whereEqualTo("nama", laporan.kategoriPelanggaran)
-                .get()
+            .get()
                 .addOnCompleteListener { task -> // Gunakan onCompleteListener agar counter selalu jalan
                     if (task.isSuccessful && task.result != null && !task.result.isEmpty) {
                         laporan.jumlahPoin = task.result.documents[0].getLong("jumlah")?.toInt() ?: 0
@@ -434,7 +434,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
 
                             for (laporanDoc in laporanDocs) {
                                 val poinPelanggaran = laporanDoc.getString("poin_pelanggaran") ?: continue
-
+                                
                                 db.collection("data_poin")
                                     .whereEqualTo("nama", poinPelanggaran)
                                     .get()
@@ -443,7 +443,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                                             val poin = poinDocs.documents[0].getLong("jumlah")?.toInt() ?: 0
                                             totalPoin += poin
                                         }
-
+                                        
                                         processedReports++
                                         if (processedReports == totalReports) {
                                             ringkasanList.add(RingkasanPoin(namaSiswa, totalPoin))
@@ -454,7 +454,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                             }
                         }
                 }
-            }
+        }
     }
 
     private fun loadRiwayatLaporanSiswa(email: String) {
@@ -474,7 +474,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                         .addOnSuccessListener { result ->
                             val tempList = mutableListOf<Laporan>()
                             completedQueries = 0
-
+                            
                             if (result.isEmpty) {
                                 laporanList.clear()
                                 laporanAdapter.notifyDataSetChanged()
@@ -506,7 +506,7 @@ class RiwayatLaporanActivity : AppCompatActivity() {
                                             val jumlahPoin = poinDocs.documents[0].getLong("jumlah")?.toInt() ?: 0
                                             laporan.jumlahPoin = jumlahPoin
                                         }
-
+                                        
                                         completedQueries++
                                         // Setelah semua query selesai
                                         if (completedQueries == result.size()) {
