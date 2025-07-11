@@ -9,6 +9,12 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.CalendarConstraints.DateValidator
+import android.os.Parcel
+import android.os.Parcelable
 
 //data class JadwalPiketTersimpan(val docId: String, val guruId: String)
 
@@ -63,33 +69,116 @@ class TambahJadwalPiketActivity : AppCompatActivity() {
         }
     }
 
+    // Validator custom: hanya tanggal >= hari ini dan tidak termasuk disabledDates
+    class CustomDateValidator(
+        private val todayMillis: Long,
+        private val disabledDates: Set<Long>
+    ) : CalendarConstraints.DateValidator {
+        override fun isValid(date: Long): Boolean {
+            val cal = Calendar.getInstance()
+            cal.timeInMillis = date
+            cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            return date >= todayMillis && !disabledDates.contains(cal.timeInMillis)
+        }
+        override fun writeToParcel(dest: Parcel, flags: Int) {}
+        override fun describeContents(): Int = 0
+        companion object CREATOR : Parcelable.Creator<CustomDateValidator> {
+            override fun createFromParcel(parcel: Parcel): CustomDateValidator {
+                // Tidak digunakan, karena validator ini tidak dipassing antar komponen
+                return CustomDateValidator(0L, emptySet())
+            }
+            override fun newArray(size: Int): Array<CustomDateValidator?> = arrayOfNulls(size)
+        }
+    }
+
     private fun showWeekPicker() {
-        val datePicker = DatePickerDialog(this, { _, year, month, dayOfMonth ->
-            calendar.set(year, month, dayOfMonth)
-            updateUIUntukMingguTerpilih()
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-        datePicker.show()
+        val dateFormatDB = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val today = Calendar.getInstance()
+        today.set(Calendar.HOUR_OF_DAY, 0)
+        today.set(Calendar.MINUTE, 0)
+        today.set(Calendar.SECOND, 0)
+        today.set(Calendar.MILLISECOND, 0)
+        val todayMillis = today.timeInMillis
+
+        db.collection("jadwal_piket")
+            .get()
+            .addOnSuccessListener { result ->
+                val disabledDates = mutableSetOf<Long>()
+                for (document in result) {
+                    val tanggal = document.getString("tanggal")
+                    if (tanggal != null) {
+                        try {
+                            val date = dateFormatDB.parse(tanggal)
+                            if (date != null) {
+                                val cal = Calendar.getInstance()
+                                cal.time = date
+                                cal.set(Calendar.HOUR_OF_DAY, 0)
+                                cal.set(Calendar.MINUTE, 0)
+                                cal.set(Calendar.SECOND, 0)
+                                cal.set(Calendar.MILLISECOND, 0)
+                                disabledDates.add(cal.timeInMillis)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+
+                val validator = CustomDateValidator(todayMillis, disabledDates)
+                val constraints = CalendarConstraints.Builder()
+                    .setValidator(validator)
+                    .build()
+
+                val picker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Pilih Tanggal Mulai Minggu")
+                    .setSelection(todayMillis)
+                    .setCalendarConstraints(constraints)
+                    .build()
+
+                picker.addOnPositiveButtonClickListener { selection ->
+                    val cal = Calendar.getInstance()
+                    cal.timeInMillis = selection
+                    // Set jam ke 00:00:00 lokal
+                    cal.set(Calendar.HOUR_OF_DAY, 0)
+                    cal.set(Calendar.MINUTE, 0)
+                    cal.set(Calendar.SECOND, 0)
+                    cal.set(Calendar.MILLISECOND, 0)
+                    calendar.timeInMillis = cal.timeInMillis
+                    updateUIUntukMingguTerpilih()
+                }
+
+                picker.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal mengambil data jadwal: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun updateUIUntukMingguTerpilih() {
+        // Reset tampilan dan data sebelum ambil data baru
+        jamEditText.setText("")
+        jamEditText.isEnabled = true
+        jadwalTersimpanMap.clear()
+        spinnerPerHari.clear()
+        tanggalPerHari.clear()
+        containerJadwalHarian.removeAllViews()
+
         calendar.firstDayOfWeek = Calendar.MONDAY
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
 
-        // PERBAIKAN KUNCI: Gunakan dua format tanggal yang berbeda.
         val dateFormatDB = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val dateFormatDisplay = SimpleDateFormat("d MMMM yyyy", Locale("id", "ID"))
 
-        // Tanggal untuk query ke database (Format: yyyy-MM-dd)
         val tanggalMulaiDB = dateFormatDB.format(calendar.time)
-
         val endCalendar = calendar.clone() as Calendar
         endCalendar.add(Calendar.DAY_OF_YEAR, 6)
         val tanggalSelesaiDB = dateFormatDB.format(endCalendar.time)
 
-        // Set teks di UI menggunakan format yang mudah dibaca
         mingguEditText.setText("${dateFormatDisplay.format(calendar.time)} - ${dateFormatDisplay.format(endCalendar.time)}")
 
-        // Panggil fungsi ambil data dengan format tanggal yang benar untuk query
         ambilJadwalTersimpan(tanggalMulaiDB, tanggalSelesaiDB)
     }
 
@@ -100,17 +189,20 @@ class TambahJadwalPiketActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { result ->
                 jadwalTersimpanMap.clear()
-                for (doc in result) {
-                    val tanggal = doc.getString("tanggal") ?: continue
-                    val guruId = doc.getString("guru_id") ?: ""
-                    jadwalTersimpanMap[tanggal] = JadwalPiketTersimpan(doc.id, guruId)
+                for (document in result) {
+                    val tanggal = document.getString("tanggal") ?: continue
+                    val guruId = document.getString("guru_id") ?: continue
+                    jadwalTersimpanMap[tanggal] = JadwalPiketTersimpan(document.id, guruId)
                 }
                 generateWeeklyScheduleViews()
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal mengambil data jadwal yang ada.", Toast.LENGTH_SHORT).show()
-                generateWeeklyScheduleViews()
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal mengambil jadwal: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun isJadwalExists(tanggal: String): Boolean {
+        return jadwalTersimpanMap.containsKey(tanggal)
     }
 
     private fun generateWeeklyScheduleViews() {
@@ -139,20 +231,25 @@ class TambahJadwalPiketActivity : AppCompatActivity() {
             tvNamaHari.text = "$day${dateFormatLabel.format(loopCalendar.time)}"
             spinner.adapter = guruAdapter
 
-            val jadwalHariIni = jadwalTersimpanMap[tanggalSaatIni]
-            if (jadwalHariIni != null) {
-                val guruIndex = guruList.indexOfFirst { it.id == jadwalHariIni.guruId }
-                if (guruIndex != -1) {
-                    spinner.setSelection(guruIndex + 1)
+            // Cek apakah tanggal ini sudah ada jadwalnya
+            if (isJadwalExists(tanggalSaatIni)) {
+                val jadwalHariIni = jadwalTersimpanMap[tanggalSaatIni]
+                if (jadwalHariIni != null) {
+                    val guruIndex = guruList.indexOfFirst { it.id == jadwalHariIni.guruId }
+                    if (guruIndex != -1) {
+                        spinner.setSelection(guruIndex + 1)
+                    }
                 }
                 // Nonaktifkan spinner jika sudah ada jadwal
                 spinner.isEnabled = false
                 tvNamaHari.setTextColor(resources.getColor(android.R.color.darker_gray))
 
                 if (!isJamPiketFilled) {
-                    db.collection("jadwal_piket").document(jadwalHariIni.docId).get().addOnSuccessListener {
-                        jamEditText.setText(it.getString("jam"))
-                    }
+                    db.collection("jadwal_piket").document(jadwalHariIni!!.docId).get()
+                        .addOnSuccessListener {
+                            jamEditText.setText(it.getString("jam"))
+                            jamEditText.isEnabled = false
+                        }
                     isJamPiketFilled = true
                 }
             }
