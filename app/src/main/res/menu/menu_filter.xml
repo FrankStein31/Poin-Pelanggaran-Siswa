@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_sort_asc"
+        android:title="Urutkan"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/action_import_excel"
-        android:title="Import dari Excel"
-        android:icon="@android:drawable/ic_menu_upload"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/menu_filter_title"
-        android:title="Filter per Kelas"
-        app:showAsAction="ifRoom|withText">
+        android:icon="@drawable/ic_excel"
+        android:title="Import Excel"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/menu_filter"
+        android:title="Filter Kelas"
+        android:icon="@drawable/ic_sort"
+        app:showAsAction="always">
         <menu>
-            <item
-                android:id="@+id/filter_semua"
-                android:title="Tampilkan Semua"/>
-            <item
-                android:id="@+id/filter_kelas_x"
-                android:title="Kelas X" />
-            <item
-                android:id="@+id/filter_kelas_xi"
-                android:title="Kelas XI" />
-            <item
-                android:id="@+id/filter_kelas_xii"
-                android:title="Kelas XII" />
+            <item android:id="@+id/filter_semua"
+                android:title="Semua Kelas"/>
+            <item android:id="@+id/filter_x"
+                android:title="Kelas X"/>
+            <item android:id="@+id/filter_xi"
+                android:title="Kelas XI"/>
+            <item android:id="@+id/filter_xii"
+                android:title="Kelas XII"/>
         </menu>
     </item>
 </menu>

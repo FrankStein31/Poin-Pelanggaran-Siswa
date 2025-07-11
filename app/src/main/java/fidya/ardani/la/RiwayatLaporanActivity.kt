@@ -30,6 +30,7 @@ import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import com.github.mikephil.charting.components.Legend
 
 class RiwayatLaporanActivity : AppCompatActivity() {
 
@@ -126,8 +127,15 @@ class RiwayatLaporanActivity : AppCompatActivity() {
             setUsePercentValues(true)
             setEntryLabelTextSize(12f)
             setEntryLabelColor(android.graphics.Color.BLACK)
-            legend.isEnabled = false
+            legend.isEnabled = true
+            legend.textSize = 12f
+            legend.textColor = android.graphics.Color.BLACK
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            legend.orientation = Legend.LegendOrientation.HORIZONTAL
+            legend.setDrawInside(false)
         }
+
         chartBulan.apply {
             description.isEnabled = false
             xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -135,8 +143,15 @@ class RiwayatLaporanActivity : AppCompatActivity() {
             axisLeft.setDrawGridLines(false)
             axisLeft.axisMinimum = 0f
             axisRight.isEnabled = false
-            legend.isEnabled = false
+            legend.isEnabled = true
+            legend.textSize = 12f
+            legend.textColor = android.graphics.Color.BLACK
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            legend.orientation = Legend.LegendOrientation.HORIZONTAL
+            legend.setDrawInside(false)
         }
+
         chartKelas.apply {
             description.isEnabled = false
             xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -144,7 +159,13 @@ class RiwayatLaporanActivity : AppCompatActivity() {
             axisLeft.setDrawGridLines(false)
             axisLeft.axisMinimum = 0f
             axisRight.isEnabled = false
-            legend.isEnabled = false
+            legend.isEnabled = true
+            legend.textSize = 12f
+            legend.textColor = android.graphics.Color.BLACK
+            legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            legend.orientation = Legend.LegendOrientation.HORIZONTAL
+            legend.setDrawInside(false)
         }
     }
 
@@ -334,10 +355,8 @@ class RiwayatLaporanActivity : AppCompatActivity() {
 
     private fun updateChartKategori(laporan: List<Laporan>) {
         val entries = laporan.groupBy { it.kategoriPelanggaran }
-            .mapValues { it.value.size }
-            .map { PieEntry(it.value.toFloat(), it.key.take(20)) }
-
-        val dataSet = PieDataSet(entries, "").apply {
+            .map { PieEntry(it.value.size.toFloat(), it.key) }
+        val dataSet = PieDataSet(entries, "Kategori Pelanggaran").apply {
             colors = ColorTemplate.MATERIAL_COLORS.toList()
             valueTextSize = 12f
             valueTextColor = android.graphics.Color.WHITE
@@ -365,9 +384,11 @@ class RiwayatLaporanActivity : AppCompatActivity() {
         chartBulan.xAxis.valueFormatter = IndexAxisValueFormatter(monthNames)
         chartBulan.xAxis.granularity = 1f
 
-        val dataSet = BarDataSet(entries, "").apply {
+        val dataSet = BarDataSet(entries, "Jumlah Pelanggaran per Bulan").apply {
             colors = ColorTemplate.VORDIPLOM_COLORS.toList()
             setDrawValues(true)
+            valueTextSize = 10f
+            valueTextColor = android.graphics.Color.BLACK
         }
         chartBulan.data = BarData(dataSet)
         chartBulan.animateY(1000)
@@ -386,9 +407,11 @@ class RiwayatLaporanActivity : AppCompatActivity() {
         chartKelas.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         chartKelas.xAxis.labelCount = labels.size
 
-        val dataSet = BarDataSet(entries, "").apply {
+        val dataSet = BarDataSet(entries, "Jumlah Pelanggaran per Kelas").apply {
             colors = ColorTemplate.PASTEL_COLORS.toList()
             setDrawValues(true)
+            valueTextSize = 10f
+            valueTextColor = android.graphics.Color.BLACK
         }
         chartKelas.data = BarData(dataSet)
         chartKelas.animateY(1000)

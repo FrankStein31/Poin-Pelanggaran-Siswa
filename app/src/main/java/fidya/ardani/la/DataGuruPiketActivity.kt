@@ -3,6 +3,7 @@ package fidya.ardani.la
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
@@ -19,27 +20,42 @@ import fidya.ardani.la.adapter.GuruAdapter
 class DataGuruPiketActivity : AppCompatActivity(), GuruAdapter.AdapterListener {
 
     private lateinit var listViewGuru: ListView
-    private lateinit var fabTambahGuru: FloatingActionButton
-    private lateinit var topAppBar: MaterialToolbar
+    private lateinit var btnTambahGuru: Button
+    private lateinit var toolbar: MaterialToolbar
     private lateinit var adapter: GuruAdapter
     private val listGuru = mutableListOf<Guru>()
 
     private val firestore = FirebaseFirestore.getInstance()
+    private var isAscending = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_guru)
 
         listViewGuru = findViewById(R.id.listViewGuru)
-        fabTambahGuru = findViewById(R.id.fabTambahGuru)
-        topAppBar = findViewById(R.id.topAppBar)
+        btnTambahGuru = findViewById(R.id.btnTambahGuru)
+        toolbar = findViewById(R.id.toolbar)
 
         adapter = GuruAdapter(this, listGuru, this)
         listViewGuru.adapter = adapter
 
-        topAppBar.setNavigationOnClickListener { onBackPressed() }
+        toolbar.setNavigationOnClickListener { finish() }
 
-        fabTambahGuru.setOnClickListener {
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_sort -> {
+                    isAscending = !isAscending
+                    item.setIcon(if (isAscending) R.drawable.ic_sort_asc else R.drawable.ic_sort_asc)
+                    listGuru.sortBy { if (isAscending) it.nama else null }
+                    listGuru.sortByDescending { if (!isAscending) it.nama else null }
+                    adapter.notifyDataSetChanged()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        btnTambahGuru.setOnClickListener {
             startActivity(Intent(this, TambahGuruPiketActivity::class.java))
         }
 

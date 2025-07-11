@@ -168,6 +168,23 @@ class EditDataSiswaActivity : AppCompatActivity() {
         val kelas = spinnerKelas.selectedItem.toString()
         val jurusan = spinnerJurusan.selectedItem.toString()
 
+        // Validasi nomor HP
+        if (noHp.length < 11 || noHp.length > 13) {
+            edtNoHp.error = "Nomor HP harus 11-13 digit"
+            edtNoHp.setBackgroundResource(android.R.color.holo_red_light)
+            return
+        } else {
+            edtNoHp.setBackgroundResource(android.R.color.transparent)
+        }
+
+        if (noHpOrtu.length < 11 || noHpOrtu.length > 13) {
+            edtNoHpOrtu.error = "Nomor HP Orang Tua harus 11-13 digit"
+            edtNoHpOrtu.setBackgroundResource(android.R.color.holo_red_light)
+            return
+        } else {
+            edtNoHpOrtu.setBackgroundResource(android.R.color.transparent)
+        }
+
         if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || noHp.isEmpty() || noHpOrtu.isEmpty()) {
             Toast.makeText(this, "Semua kolom harus diisi", Toast.LENGTH_SHORT).show()
             return

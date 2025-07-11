@@ -145,6 +145,9 @@ class TambahJadwalPiketActivity : AppCompatActivity() {
                 if (guruIndex != -1) {
                     spinner.setSelection(guruIndex + 1)
                 }
+                // Nonaktifkan spinner jika sudah ada jadwal
+                spinner.isEnabled = false
+                tvNamaHari.setTextColor(resources.getColor(android.R.color.darker_gray))
 
                 if (!isJamPiketFilled) {
                     db.collection("jadwal_piket").document(jadwalHariIni.docId).get().addOnSuccessListener {

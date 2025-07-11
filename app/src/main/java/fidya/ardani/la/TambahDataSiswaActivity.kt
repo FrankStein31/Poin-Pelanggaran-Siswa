@@ -138,6 +138,23 @@ class TambahDataSiswaActivity : AppCompatActivity() {
         val email = edtEmail.text.toString().trim()
         val password = edtPassword.text.toString().trim()
 
+        // Validasi nomor HP
+        if (noHp.length < 11 || noHp.length > 13) {
+            edtNoHp.error = "Nomor HP harus 11-13 digit"
+            edtNoHp.setBackgroundResource(android.R.color.holo_red_light)
+            return
+        } else {
+            edtNoHp.setBackgroundResource(android.R.color.transparent)
+        }
+
+        if (noHpOrtu.length < 11 || noHpOrtu.length > 13) {
+            edtNoHpOrtu.error = "Nomor HP Orang Tua harus 11-13 digit"
+            edtNoHpOrtu.setBackgroundResource(android.R.color.holo_red_light)
+            return
+        } else {
+            edtNoHpOrtu.setBackgroundResource(android.R.color.transparent)
+        }
+
         if (nama.isEmpty() || nis.isEmpty() || jurusan.isEmpty() || kelas.isEmpty()
             || alamat.isEmpty() || alamat.isEmpty() || noHp.isEmpty() || noHpOrtu.isEmpty() || email.isEmpty() || password.isEmpty()
         ) {

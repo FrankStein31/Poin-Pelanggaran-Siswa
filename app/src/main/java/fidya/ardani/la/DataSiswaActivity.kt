@@ -59,6 +59,7 @@ class DataSiswaActivity : AppCompatActivity(), SiswaAdapter.SiswaAdapterListener
     private val FILE_PICKER_REQUEST_CODE = 123
 
     private var currentKelasFilter: String? = null
+    private var isAscending = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -220,10 +221,15 @@ class DataSiswaActivity : AppCompatActivity(), SiswaAdapter.SiswaAdapterListener
         btnBack.setOnClickListener { onBackPressed() }
 
         toolbar.setOnMenuItemClickListener { item: MenuItem ->
-            // MODIFIKASI: Tambahkan case untuk action_import_excel
             when (item.itemId) {
                 R.id.action_import_excel -> {
                     bukaFilePickerExcel()
+                    true
+                }
+                R.id.action_sort -> {
+                    isAscending = !isAscending
+                    item.setIcon(if (isAscending) R.drawable.ic_sort_asc else R.drawable.ic_sort_asc)
+                    filterDanTampilkanData(searchView.query.toString())
                     true
                 }
                 R.id.filter_semua -> {
@@ -232,19 +238,19 @@ class DataSiswaActivity : AppCompatActivity(), SiswaAdapter.SiswaAdapterListener
                     filterDanTampilkanData(searchView.query.toString())
                     true
                 }
-                R.id.filter_kelas_x -> {
+                R.id.filter_x -> {
                     currentKelasFilter = "X"
                     currentPage = 1
                     filterDanTampilkanData(searchView.query.toString())
                     true
                 }
-                R.id.filter_kelas_xi -> {
+                R.id.filter_xi -> {
                     currentKelasFilter = "XI"
                     currentPage = 1
                     filterDanTampilkanData(searchView.query.toString())
                     true
                 }
-                R.id.filter_kelas_xii -> {
+                R.id.filter_xii -> {
                     currentKelasFilter = "XII"
                     currentPage = 1
                     filterDanTampilkanData(searchView.query.toString())
@@ -294,7 +300,7 @@ class DataSiswaActivity : AppCompatActivity(), SiswaAdapter.SiswaAdapterListener
             cocokKelas && cocokNama
         }
 
-        listHasilFilter.addAll(hasilFilter.sortedBy { it.nama })
+        listHasilFilter.addAll(if (isAscending) hasilFilter.sortedBy { it.nama } else hasilFilter.sortedByDescending { it.nama })
         updateTampilanData()
     }
 
