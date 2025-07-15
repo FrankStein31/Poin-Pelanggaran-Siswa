@@ -120,10 +120,17 @@ class DetailPelanggaranActivity : AppCompatActivity() {
     }
 
     private fun updateButtonState() {
+        val totalPoin = dataPelanggaran.sumOf { it.jumlahPoin }
+        
         if (isSuratSudahDicetak) {
             btnCetakSP.isEnabled = false
             btnCetakSP.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
             btnCetakSP.text = "Surat Sudah Dicetak"
+            btnCetakSP.alpha = 0.5f
+        } else if (totalPoin < 50) {
+            btnCetakSP.isEnabled = false
+            btnCetakSP.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
+            btnCetakSP.text = "Poin Belum Mencukupi ($totalPoin/50)"
             btnCetakSP.alpha = 0.5f
         } else {
             btnCetakSP.isEnabled = true
@@ -189,7 +196,12 @@ class DetailPelanggaranActivity : AppCompatActivity() {
                     }
                     1 -> { // Pesan WhatsApp
                         val formattedNumber = formatPhoneNumberForWhatsApp(phoneNumber)
-                        val url = "https://api.whatsapp.com/send?phone=$formattedNumber"
+                        val message = if (contactPerson.contains("Siswa")) {
+                            generateMessageForStudent()
+                        } else {
+                            generateMessageForParent()
+                        }
+                        val url = "https://api.whatsapp.com/send?phone=$formattedNumber&text=${Uri.encode(message)}"
                         try {
                             val intent = Intent(Intent.ACTION_VIEW).apply {
                                 data = Uri.parse(url)
@@ -204,6 +216,25 @@ class DetailPelanggaranActivity : AppCompatActivity() {
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun generateMessageForStudent(): String {
+        val totalPoin = dataPelanggaran.sumOf { it.jumlahPoin }
+        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+        val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+        
+        return "Halo! Poin pelanggaran kamu telah mencapai $totalPoin poin. " +
+               "Kamu akan mengikuti bimbingan konseling pada hari ini ($currentDate) " +
+               "jam $currentTime di ruangan BK menemui guru BK."
+    }
+
+    private fun generateMessageForParent(): String {
+        val totalPoin = dataPelanggaran.sumOf { it.jumlahPoin }
+        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+        val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+        
+        return "Halo! Siswa bernama $currentNamaSiswa kelas $currentKelas telah mencapai $totalPoin poin pelanggaran. " +
+               "Siswa akan mengikuti bimbingan konseling pada hari ini tanggal $currentDate jam $currentTime dengan guru BK."
     }
 
     // Fungsi helper untuk memformat nomor HP untuk WhatsApp (mengganti '0' dengan '62')
@@ -267,6 +298,7 @@ class DetailPelanggaranActivity : AppCompatActivity() {
                                 dataPelanggaran.clear()
                                 dataPelanggaran.addAll(tempList)
                                 adapter.notifyDataSetChanged()
+                                updateButtonState() // Update status tombol setelah data dimuat
                             }
                         }
                         .addOnFailureListener { e ->
@@ -276,6 +308,7 @@ class DetailPelanggaranActivity : AppCompatActivity() {
                                 dataPelanggaran.clear()
                                 dataPelanggaran.addAll(tempList)
                                 adapter.notifyDataSetChanged()
+                                updateButtonState() // Update status tombol setelah data dimuat
                             }
                             Toast.makeText(this, "Gagal mengambil data poin: ${e.message}", Toast.LENGTH_SHORT).show()
                         }

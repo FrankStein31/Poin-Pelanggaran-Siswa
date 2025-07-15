@@ -25,7 +25,9 @@
         android:layout_marginBottom="12dp"
         android:text="Cetak Surat Peringatan"
         android:textStyle="bold"
-        android:padding="12dp" />
+        android:padding="12dp"
+        android:background="@drawable/button_background"
+        android:textColor="@android:color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
